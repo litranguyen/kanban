@@ -19,9 +19,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
-import { seedBoard } from "@/data/seedBoard";
 import { addCard, deleteCard, renameColumn } from "@/lib/boardState";
 import { Board, Card, Column } from "@/types/kanban";
 
@@ -144,12 +143,62 @@ const KanbanColumn = ({
 };
 
 export const KanbanBoard = () => {
-  const [board, setBoard] = useState<Board>(seedBoard);
+  const [board, setBoard] = useState<Board | null>(null);
   const [activeCard, setActiveCard] = useState<Card | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const sensors = useSensors(useSensor(PointerSensor));
+
+  useEffect(() => {
+    const loadBoard = async () => {
+      try {
+        const response = await fetch("/api/board");
+        if (!response.ok) {
+          throw new Error("Board fetch failed");
+        }
+        const boardData = await response.json();
+        setBoard(boardData);
+      } catch (fetchError) {
+        setError("Unable to load board data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBoard();
+  }, []);
+
+  const persistBoard = async (nextBoard: Board) => {
+    try {
+      const response = await fetch("/api/board", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nextBoard),
+      });
+      if (!response.ok) {
+        throw new Error("Save failed");
+      }
+    } catch (saveError) {
+      setError("Unable to save board changes.");
+    }
+  };
+
+  const updateBoard = (updater: (current: Board) => Board) => {
+    setBoard((current) => {
+      if (!current) {
+        return current;
+      }
+      const nextBoard = updater(current);
+      persistBoard(nextBoard);
+      return nextBoard;
+    });
+  };
 
   const cardLocations = useMemo(() => {
     const lookup = new Map<string, { columnId: string; index: number; card: Card }>();
+    if (!board) {
+      return lookup;
+    }
     board.columns.forEach((column) => {
       column.cards.forEach((card, index) => {
         lookup.set(card.id, { columnId: column.id, index, card });
@@ -179,7 +228,7 @@ export const KanbanBoard = () => {
     }
 
     if (overLocation) {
-      setBoard((current) => {
+      updateBoard((current) => {
         const fromColumnIndex = current.columns.findIndex(
           (column) => column.id === activeLocation.columnId,
         );
@@ -232,7 +281,7 @@ export const KanbanBoard = () => {
       return;
     }
 
-    setBoard((current) => {
+    updateBoard((current) => {
       const activeColumn = current.columns.find((column) =>
         column.cards.some((card) => card.id === activeId),
       );
@@ -270,6 +319,14 @@ export const KanbanBoard = () => {
     });
   };
 
+  if (loading) {
+    return <div className="kanban-page">Loading board...</div>;
+  }
+
+  if (error || !board) {
+    return <div className="kanban-page">{error ?? "Board unavailable."}</div>;
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -289,13 +346,13 @@ export const KanbanBoard = () => {
               key={column.id}
               column={column}
               onRenameColumn={(columnId, title) =>
-                setBoard((current) => renameColumn(current, columnId, title))
+                updateBoard((current) => renameColumn(current, columnId, title))
               }
               onAddCard={(columnId, title, details) =>
-                setBoard((current) => addCard(current, columnId, { title, details }))
+                updateBoard((current) => addCard(current, columnId, { title, details }))
               }
               onDeleteCard={(cardId) =>
-                setBoard((current) => deleteCard(current, cardId))
+                updateBoard((current) => deleteCard(current, cardId))
               }
             />
           ))}

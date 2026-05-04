@@ -33,7 +33,6 @@ export const AuthGate = () => {
     return (
       <section className="auth-board-shell">
         <div className="auth-toolbar">
-          <span>Logged in as {username || "user"}</span>
           <button type="button" onClick={handleLogout}>
             Logout
           </button>

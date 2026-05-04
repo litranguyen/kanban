@@ -10,7 +10,7 @@ DEFAULT_BOARD_ID = "board-main"
 
 SEED_BOARD = {
     "id": DEFAULT_BOARD_ID,
-    "title": "Product Roadmap Board",
+    "title": "Kanban Board",
     "columns": [
         {
             "id": "column-backlog",

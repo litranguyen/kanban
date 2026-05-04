@@ -2,23 +2,12 @@ import { Board } from "@/types/kanban";
 
 export const seedBoard: Board = {
   id: "board-main",
-  title: "Product Roadmap Board",
+  title: "Kanban Board",
   columns: [
     {
       id: "column-backlog",
       title: "Backlog",
-      cards: [
-        {
-          id: "card-1",
-          title: "Onboarding flow copy pass",
-          details: "Refine tone and shorten first-run experience copy.",
-        },
-        {
-          id: "card-2",
-          title: "Mobile spacing audit",
-          details: "Review all key screens for spacing consistency.",
-        },
-      ],
+      cards: [],
     },
     {
       id: "column-ready",

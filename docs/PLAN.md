@@ -141,3 +141,14 @@ This plan breaks the work into concrete phases, with explicit goals, success cri
 - No multi-user or board-switching flows.
 - No external runtime dependencies beyond the AI phase.
 - Preserve the existing frontend demo behavior while moving to a persistent backend.
+
+## Current implementation notes
+
+- Backend uses FastAPI serving the production-built Next.js frontend from `/`.
+- Board persistence is implemented with a local SQLite database and seeded board data.
+- Single-user auth is enforced with fixed credentials (`user` / `password`), no registration or multi-user support.
+- Board access is gated behind login, with logout returning the user to the login screen.
+- The frontend uses `/api/board` GET and PUT endpoints to load and save board state.
+- Local board helpers manage rename, add, delete, and move operations before persisting.
+- Phase 8 remains in progress: tests and coverage are being finalized, with backend and frontend validation still active.
+

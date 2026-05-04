@@ -31,9 +31,9 @@ describe("boardState helpers", () => {
   });
 
   it("moves a card into another column", () => {
-    const result = moveCard(seedBoard, "card-1", "column-done", 0);
-    expect(result.columns[4].cards[0].id).toBe("card-1");
-    const backlogHasCard = result.columns[0].cards.some((card) => card.id === "card-1");
-    expect(backlogHasCard).toBe(false);
+    const result = moveCard(seedBoard, "card-3", "column-done", 0);
+    expect(result.columns[4].cards[0].id).toBe("card-3");
+    const readyHasCard = result.columns[1].cards.some((card) => card.id === "card-3");
+    expect(readyHasCard).toBe(false);
   });
 });

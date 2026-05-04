@@ -32,7 +32,9 @@ export const AuthGate = () => {
   if (authenticated) {
     return (
       <section className="auth-board-shell">
-        <div className="auth-toolbar">
+        <div className="auth-toolbar flex justify-between items-center">
+          <div></div>
+          <span>{username || "user"}</span>
           <button type="button" onClick={handleLogout}>
             Logout
           </button>

@@ -32,7 +32,7 @@ describe("AuthGate", () => {
     fireEvent.change(screen.getAllByLabelText(/password/i)[0], { target: { value: "password" } });
     fireEvent.click(screen.getAllByRole("button", { name: /login/i })[0]);
 
-    expect(screen.getByText(/logged in as user/i)).toBeInTheDocument();
+    expect(screen.getByText(/^user$/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
   });
 

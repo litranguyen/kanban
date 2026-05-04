@@ -7,14 +7,30 @@ import { seedBoard } from "@/data/seedBoard";
 describe("KanbanBoard", () => {
   beforeEach(() => {
     vi.stubGlobal("fetch", vi.fn(async (input, init) => {
-      if (typeof input === "string" && input === "/api/board") {
+      const url = typeof input === "string" ? input : input.url;
+      const method = init?.method ?? "GET";
+
+      if (url.endsWith("/api/board") && method === "GET") {
         return {
           ok: true,
+          status: 200,
           json: async () => seedBoard,
         };
       }
 
-      return { ok: true, json: async () => ({}) };
+      if (url.endsWith("/api/board") && method === "PUT") {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => seedBoard,
+        };
+      }
+
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({}),
+      };
     }));
   });
 

@@ -23,6 +23,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import { addCard, deleteCard, renameColumn } from "@/lib/boardState";
 import { Board, Card, Column } from "@/types/kanban";
+import { ChatWidget } from "@/components/ChatWidget";
 
 type CardFormProps = {
   onSubmit: (title: string, details: string) => void;
@@ -180,6 +181,19 @@ export const KanbanBoard = () => {
       }
     } catch (saveError) {
       setError("Unable to save board changes.");
+    }
+  };
+
+  const reloadBoard = async () => {
+    try {
+      const response = await fetch("/api/board");
+      if (!response.ok) {
+        throw new Error("Board fetch failed");
+      }
+      const boardData = await response.json();
+      setBoard(boardData);
+    } catch (fetchError) {
+      setError("Unable to reload board data.");
     }
   };
 
@@ -358,6 +372,7 @@ export const KanbanBoard = () => {
           ))}
         </div>
       </main>
+      <ChatWidget onBoardUpdate={reloadBoard} />
       <DragOverlay>
         {activeCard ? (
           <article className="kanban-card dragging">

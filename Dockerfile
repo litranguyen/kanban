@@ -7,7 +7,7 @@ RUN npm run build
 
 FROM python:3.12-slim
 WORKDIR /app
-RUN python -m pip install --no-cache-dir fastapi uvicorn[standard]
+RUN python -m pip install --no-cache-dir fastapi uvicorn[standard] httpx python-dotenv
 COPY backend /app
 COPY --from=frontend-builder /frontend/out /app/frontend_build
 EXPOSE 8000

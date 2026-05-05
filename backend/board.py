@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from sqlite3 import Connection
 from typing import Any
 
-from .db import create_connection
+from db import create_connection
 
 DEFAULT_BOARD_ID = "board-main"
 

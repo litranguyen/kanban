@@ -295,7 +295,10 @@ export const KanbanBoard = () => {
       return;
     }
 
-    updateBoard((current) => {
+    // Update UI state only — no server persist. Persistence happens once on handleDragEnd.
+    setBoard((current) => {
+      if (!current) return current;
+
       const activeColumn = current.columns.find((column) =>
         column.cards.some((card) => card.id === activeId),
       );

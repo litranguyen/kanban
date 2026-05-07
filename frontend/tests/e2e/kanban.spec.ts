@@ -3,7 +3,11 @@ import { expect, test } from "@playwright/test";
 test("kanban mvp workflows", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "Product Roadmap Board" })).toBeVisible();
+  await page.getByLabel("Username").fill("user");
+  await page.getByLabel("Password").fill("password");
+  await page.getByRole("button", { name: "Login" }).click();
+
+  await expect(page.getByRole("heading", { name: "Kanban Board" })).toBeVisible();
   await expect(page.locator("[data-column-id]")).toHaveCount(5);
 
   const firstColumn = page.locator("[data-column-id]").first();

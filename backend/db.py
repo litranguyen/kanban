@@ -44,6 +44,9 @@ CREATE_TABLES_SQL = [
         FOREIGN KEY(board_id) REFERENCES boards(id) ON DELETE CASCADE,
         FOREIGN KEY(column_id) REFERENCES columns(id) ON DELETE CASCADE
     )""",
+    "CREATE INDEX IF NOT EXISTS idx_columns_board ON columns(board_id)",
+    "CREATE INDEX IF NOT EXISTS idx_cards_column ON cards(column_id)",
+    "CREATE INDEX IF NOT EXISTS idx_cards_board ON cards(board_id)",
 ]
 
 
